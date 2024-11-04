@@ -6,7 +6,7 @@ from users.views import PaymentsListAPIView
 
 app_name = UsersConfig.name
 router = SimpleRouter()
-#router.register("", UserViewSet, basename="users")
+# router.register("", UserViewSet, basename="users")
 
 
 urlpatterns = [
