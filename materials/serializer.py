@@ -1,7 +1,7 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 
-from materials.models import Course, Lesson
+from materials.models import Course, Lesson, Subscription
 from materials.validators import UrlValidator
 
 NULLABLE = {"null": True, "blank": True}
@@ -25,3 +25,8 @@ class CourseSerializer(ModelSerializer):
 
         def get_lessons_count(self, instance):
             return instance.lesson_set.count()
+
+class SubscriptionSerializer(ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
