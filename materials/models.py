@@ -18,7 +18,7 @@ class Course(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name="Создатель курса",
-        **NULLABLE
+        **NULLABLE,
     )
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Lesson(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name="Создатель урока",
-        **NULLABLE
+        **NULLABLE,
     )
 
     def __str__(self):
@@ -57,3 +57,17 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = "Урок"
         verbose_name_plural = "Уроки"
+
+
+class Subscription(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь"
+    )
+
+    def __str__(self):
+        return f"{self.course} - {self.user}"
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
