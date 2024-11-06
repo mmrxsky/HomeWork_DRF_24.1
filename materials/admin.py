@@ -15,4 +15,4 @@ class UserLesson(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class UserSubscription(admin.ModelAdmin):
-    list_display = ('id', 'course', 'user')
+    list_display = ("id", "course", "user")
