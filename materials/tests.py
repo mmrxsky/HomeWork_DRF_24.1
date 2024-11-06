@@ -10,75 +10,73 @@ class LessonTestCase(APITestCase):
 
     def setUp(self):
         # Подготовка данных перед каждым тестом
-        self.user = User.objects.create(email='admin@admin.com')
-        self.course = Course.objects.create(title='Python', description='Уроки по Python', owner=self.user)
-        self.lesson = Lesson.objects.create(title='Урок 1', description='Начало', course=self.course, owner=self.user)
+        self.user = User.objects.create(email="admin@admin.com")
+        self.course = Course.objects.create(
+            title="Python", description="Уроки по Python", owner=self.user
+        )
+        self.lesson = Lesson.objects.create(
+            title="Урок 1", description="Начало", course=self.course, owner=self.user
+        )
         self.client.force_authenticate(user=self.user)
 
     def test_lesson_retrieve(self):
-        url = reverse('materials:retrieve-lesson', args=(self.lesson.pk,))
+        url = reverse("materials:retrieve-lesson", args=(self.lesson.pk,))
         response = self.client.get(url)
         data = response.json()
 
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data.get('title'), self.lesson.title
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get("title"), self.lesson.title)
 
     def test_lesson_create(self):
-        url = reverse('materials:create-lesson')
+        url = reverse("materials:create-lesson")
         data = {
-            'title': 'Урок 2',
-            'description': 'Продолжение',
-            'course': self.course.pk
+            "title": "Урок 2",
+            "description": "Продолжение",
+            "course": self.course.pk,
         }
         response = self.client.post(url, data)
 
-        self.assertEqual(
-            response.status_code, status.HTTP_201_CREATED
-        )
-        self.assertEqual(
-            Lesson.objects.all().count(), 2
-        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Lesson.objects.all().count(), 2)
 
     def test_lesson_update(self):
-        url = reverse('materials:update-lesson', args=(self.lesson.pk,))
-        data = {'title': 'Урок 3'}
+        url = reverse("materials:update-lesson", args=(self.lesson.pk,))
+        data = {"title": "Урок 3"}
         response = self.client.patch(url, data)
 
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-        self.assertEqual(
-            response.data.get('title'), 'Урок 3'
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("title"), "Урок 3")
 
     def test_lesson_delete(self):
-        url = reverse('materials:delete-lesson', args=(self.lesson.pk,))
+        url = reverse("materials:delete-lesson", args=(self.lesson.pk,))
         response = self.client.delete(url)
 
-        self.assertEqual(
-            response.status_code, status.HTTP_204_NO_CONTENT
-        )
-        self.assertEqual(
-            Lesson.objects.all().count(), 0
-        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Lesson.objects.all().count(), 0)
 
     def test_lesson_list(self):
-        url = reverse('materials:lessons-list')
+        url = reverse("materials:lessons-list")
         response = self.client.get(url)
 
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {'count': 1, 'next': None, 'previous': None, 'results':
-                [{'id': self.lesson.pk, 'title': self.lesson.title, 'description': self.lesson.description,
-                  'preview': None, 'url': None,
-                  'course': self.lesson.course.pk, 'owner': self.lesson.owner.pk}]}
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "id": self.lesson.pk,
+                        "title": self.lesson.title,
+                        "description": self.lesson.description,
+                        "preview": None,
+                        "url": None,
+                        "course": self.lesson.course.pk,
+                        "owner": self.lesson.owner.pk,
+                    }
+                ],
+            },
         )
 
 
@@ -86,20 +84,22 @@ class SubscriptionTestCase(APITestCase):
 
     def setUp(self):
         # Подготовка данных перед каждым тестом
-        self.user = User.objects.create(email='admin@admin.com')
-        self.course = Course.objects.create(title='Python', description='Уроки по Python', owner=self.user)
-        self.lesson = Lesson.objects.create(title='Урок 1', description='Начало', course=self.course, owner=self.user)
-        self.subscription = Subscription.objects.create(course=self.course, user=self.user)
+        self.user = User.objects.create(email="admin@admin.com")
+        self.course = Course.objects.create(
+            title="Python", description="Уроки по Python", owner=self.user
+        )
+        self.lesson = Lesson.objects.create(
+            title="Урок 1", description="Начало", course=self.course, owner=self.user
+        )
+        self.subscription = Subscription.objects.create(
+            course=self.course, user=self.user
+        )
         self.client.force_authenticate(user=self.user)
 
     def test_subscription(self):
         url = reverse("materials:subscription")
-        data = {
-            "course": self.course.pk
-        }
+        data = {"course": self.course.pk}
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data.get('message'), 'Подписка отключена'
-        )
+        self.assertEqual(response.data.get("message"), "Подписка отключена")
